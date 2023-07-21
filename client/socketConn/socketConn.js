@@ -12,7 +12,7 @@ import {
 let socket;
 
 export const connectWithSocketServer = () => {
-  socket = io('http://localhost:3003');
+  socket = io('http://localhost:3001');
   socket.on('connect', () => {
     console.log('connected to socket.io server');
   });

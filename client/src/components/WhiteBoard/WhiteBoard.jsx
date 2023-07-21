@@ -1,6 +1,6 @@
 import React, { useRef, useLayoutEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import './Whiteboard.css'
+import './WhiteBoard.css'
 import Menu from '../Menu/Menu'
 import rough from 'roughjs'
 import { toolTypes, actions, cursorPosition } from '../../constants'
