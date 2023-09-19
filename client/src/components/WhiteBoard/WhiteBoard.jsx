@@ -144,6 +144,7 @@ const Whiteboard = () => {
   const handleMouseMove = (event) => {
     const { clientX, clientY } = event;
 
+
     lastCursorPosition = { x: clientX, y: clientY };
 
     if (emitCursor) {

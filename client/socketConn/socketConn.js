@@ -1,4 +1,3 @@
-import { io } from 'socket.io-client';
 import { store } from '../src/store/store';
 import {
   setElements,
@@ -12,38 +11,58 @@ import {
 let socket;
 
 export const connectWithSocketServer = () => {
-  socket = io('http://localhost:3001');
-  socket.on('connect', () => {
-    console.log('connected to socket.io server');
+  socket = new WebSocket('ws://localhost:3001');
+
+  socket.addEventListener('open', (event) => {
+    console.log('connected to WebSocket server');
   });
 
-  socket.on('whiteboard-state', (elements) => {
-    console.log('initialized loading whiteboard');
-    store.dispatch(setElements(elements));
-  });
+  socket.addEventListener('message', (event) => {
+    const data = JSON.parse(event.data);
 
-  socket.on('element-update', (elementData) => {
-    store.dispatch(updateElement(elementData));
-  });
-
-  socket.on('whiteboard-clear', () => {
-    store.dispatch(setElements([]));
-  });
-  socket.on('cursor-position', (cursorData) => {
-    store.dispatch(updateCursorPosition(cursorData));
-  });
-  socket.on('user-disconnected', (disconnectedUserId) => {
-    store.dispatch(removeCursorPosition(disconnectedUserId));
+    switch (data.event) {
+      case 'whiteboard-state':
+        console.log('initialized loading whiteboard');
+        store.dispatch(setElements(data.payload));
+        break;
+      case 'element-update':
+        store.dispatch(updateElement(data.payload));
+        break;
+      case 'whiteboard-clear':
+        store.dispatch(setElements([]));
+        break;
+      case 'cursor-position':
+        store.dispatch(updateCursorPosition(data.payload));
+        break;
+      case 'user-disconnected':
+        store.dispatch(removeCursorPosition(data.payload));
+        break;
+    }
   });
 };
 
 export const emitElementUpdate = (elementData) => {
-  socket.emit('element-update', elementData);
+  socket.send(
+    JSON.stringify({
+      event: 'element-update',
+      payload: elementData,
+    })
+  );
 };
+
 export const emitClearWhiteboard = () => {
-  socket.emit('whiteboard-clear');
+  socket.send(
+    JSON.stringify({
+      event: 'whiteboard-clear',
+    })
+  );
 };
 
 export const emitCursorPosition = (cursorData) => {
-  socket.emit('cursor-position', cursorData);
+  socket.send(
+    JSON.stringify({
+      event: 'cursor-position',
+      payload: cursorData,
+    })
+  );
 };

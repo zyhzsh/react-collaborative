@@ -5,8 +5,8 @@ const CursorOverlay = () => {
   const cursors = useSelector((state) => state.cursor.cursors);
   return (
     <>
-      {cursors.map(c => (
-        <div className='cursor' style={{ position: 'absolute', left: c.x, top: c.y, width: "30px" }}>
+      {cursors.map(_, c => (
+        <div id={_} className='cursor' style={{ position: 'absolute', left: c.x, top: c.y, width: "30px" }}>
           <img src={cursor} key={c.userId} className='cursor' style={{ width: "30px" }} />
           <>{c.userId}</>
         </div>
