@@ -1,4 +1,3 @@
-import React from 'react';
 import { syncEngineServer } from '../store';
 import { useSyncedStore } from '@syncedstore/react';
 import TodoItem from './TodoItem';

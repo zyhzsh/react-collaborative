@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { syncEngineServer } from './store';
 import TodoList from './components/TodoList';
 import AddTodoInput from './components/AddTodoInput';

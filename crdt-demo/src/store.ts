@@ -1,4 +1,5 @@
 import { syncedStore, getYjsDoc } from '@syncedstore/core';
+// @ts-ignore
 import { WebrtcProvider } from 'y-webrtc';
 import { IndexeddbPersistence } from 'y-indexeddb';
 
@@ -17,10 +18,10 @@ class SyncEngineServer {
     // 'wss://signaling.yjs.dev',
     // 'wss://y-webrtc-signaling-eu.herokuapp.com',
     // 'wss://y-webrtc-signaling-us.herokuapp.com',
-    'ws://localhost:4444',
+    //'ws://localhost:4444',
     //'wss://sync-engine-prototype.nw.r.appspot.com:4444',
     // 'ws://sync-engine-prototype.nw.r.appspot.com:4444',
-    // 'wss://sync-engine-prototype.nw.r.appspot.com/',
+    'wss://sync-engine-prototype.nw.r.appspot.com/',
     //'wss://sync-engine-signalling-32qfarbkya-ew.a.run.app',
   ];
   private indexeddbPersistence: IndexeddbPersistence;
