@@ -1,57 +1,48 @@
-// import { syncedStore, getYjsDoc } from '@syncedstore/core';
-// import { WebrtcProvider } from 'y-webrtc';
-
-// // (optional, define types for TypeScript)
-// type Todo = { completed: boolean; title: string };
-
-// // Create your SyncedStore store
-// export const store = syncedStore({ todos: [] as Todo[], fragment: 'xml' });
-
-// // Create a document that syncs automatically using Y-WebRTC
-// const doc = getYjsDoc(store);
-// export const webrtcProvider = new WebrtcProvider('syncedstore-todos', doc);
-
-// export const disconnect = () => webrtcProvider.disconnect();
-// export const connect = () => webrtcProvider.connect();
-
 import { syncedStore, getYjsDoc } from '@syncedstore/core';
 import { WebrtcProvider } from 'y-webrtc';
+import { IndexeddbPersistence } from 'y-indexeddb';
 
-// (optional, define types for TypeScript)
-type Todo = { completed: boolean; title: string };
+export type Todo = { id: string; completed: boolean; title: string };
+export type InputValueWrapper = { value: string };
 
-// Create your SyncedStore store
-export const store = syncedStore({ todos: [] as Todo[], fragment: 'xml' });
+class SyncEngineServer {
+  public store = syncedStore({
+    todos: [] as Todo[],
+    inputValue: {} as InputValueWrapper,
+  });
 
-// Create a document that syncs automatically using Y-WebRTC
-const doc = getYjsDoc(store);
+  private doc = getYjsDoc(this.store);
+  //private signalingServers = ['ws://localhost:4444'];
+  private signalingServers = [
+    // 'wss://signaling.yjs.dev',
+    // 'wss://y-webrtc-signaling-eu.herokuapp.com',
+    // 'wss://y-webrtc-signaling-us.herokuapp.com',
+    'ws://localhost:4444',
+    //'wss://sync-engine-prototype.nw.r.appspot.com:4444',
+    // 'ws://sync-engine-prototype.nw.r.appspot.com:4444',
+    // 'wss://sync-engine-prototype.nw.r.appspot.com/',
+    //'wss://sync-engine-signalling-32qfarbkya-ew.a.run.app',
+  ];
+  private indexeddbPersistence: IndexeddbPersistence;
+  private webrtcProvider: WebrtcProvider;
 
-// Specify the local signaling server
-const signalingServers = ['ws://localhost:4444'];
+  constructor() {
+    this.indexeddbPersistence = new IndexeddbPersistence(
+      'todo-demo-4',
+      this.doc
+    );
+    this.webrtcProvider = new WebrtcProvider('todo-demo-4', this.doc, {
+      signaling: this.signalingServers,
+    });
 
-export const webrtcProvider = new WebrtcProvider('syncedstore-todos', doc, {
-  signaling: signalingServers,
-});
+    this.indexeddbPersistence.whenSynced.then(() => {
+      console.log('The Yjs document has been synced with IndexedDB');
+    });
+  }
 
-export const disconnect = () => webrtcProvider.disconnect();
-export const connect = () => webrtcProvider.connect();
+  connect = () => this.webrtcProvider.connect();
 
-// import { syncedStore, getYjsDoc } from '@syncedstore/core';
-// import { WebsocketProvider } from 'y-websocket';
+  disconnect = () => this.webrtcProvider.disconnect();
+}
 
-// // (optional, define types for TypeScript)
-// type Todo = { completed: boolean; title: string };
-
-// // Create your SyncedStore store
-// export const store = syncedStore({ todos: [] as Todo[] });
-
-// // Create a document that syncs automatically using Y-WebRTC
-// const doc = getYjsDoc(store);
-// export const wsProvider = new WebsocketProvider(
-//   'ws://localhost:3001',
-//   'room-1',
-//   doc
-// );
-
-// export const disconnect = () => wsProvider.disconnect();
-// export const connect = () => wsProvider.connect();
+export const syncEngineServer = new SyncEngineServer();
