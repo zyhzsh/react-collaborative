@@ -5,6 +5,7 @@ import AddTodoInput from './components/AddTodoInput';
 export default function App() {
   useEffect(() => {
     syncEngineServer.connect();
+
     return () => {
       syncEngineServer.disconnect();
     };
