@@ -5,6 +5,7 @@ import { WebrtcProvider } from 'y-webrtc';
 export type Todo = { id: string; completed: boolean; title: string };
 export type InputValueWrapper = { value: string };
 
+const ServerURL = import.meta.env.VITE_SERVERURL;
 class SyncEngineServer {
   public store = syncedStore({
     todos: [] as Todo[],
@@ -12,13 +13,7 @@ class SyncEngineServer {
   });
 
   private doc = getYjsDoc(this.store);
-  private signalingServers = [
-    // 'ws://localhost:4444',
-    //App engine
-    'wss://sync-engine-prototype.nw.r.appspot.com/',
-    //Cloud run
-    //'wss://sync-engine-signalling-32qfarbkya-ew.a.run.app',
-  ];
+  private signalingServers = [ServerURL];
   //private indexeddbPersistence: IndexeddbPersistence;
   private webrtcProvider: WebrtcProvider;
 

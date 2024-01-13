@@ -33,7 +33,7 @@ export const connectWithSocketServer = () => {
     store.dispatch(updateCursorPosition(cursorData));
   });
   socket.on('user-disconnected', (disconnectedUserId) => {
-    store.dispatch(removeCursorPosition(disconnectedUserId));
+    store.dispatch(removeCufigrsorPosition(disconnectedUserId));
   });
 };
 
